@@ -23,29 +23,79 @@ contract VotingGovernorExecutionsTest is BaseVotingGovernorTest {
         vm.roll(block.number + votingGovernor.votingPeriod() + 1);
         assertEq(4, uint256(votingGovernor.state(proposalId)));
 
-        console.logBytes32(bytes32(bytes("Description")));
-
-        vm.roll(block.number + 15);
         votingGovernor.queue(proposalId);
-
-        // _queue();
         assertEq(5, uint256(votingGovernor.state(proposalId)));
         vm.stopPrank();
     }
 
     function testDefeatedProposalQueue() public {
+        vm.startPrank(owner);
+        votingToken.delegate(owner);
+        vm.roll(block.number + 1);
 
+        uint256 proposalId = _propose();
+        assertEq(0, uint256(votingGovernor.state(proposalId)));
+
+        vm.roll(block.number + votingGovernor.votingDelay() + 1);
+        assertEq(1, uint256(votingGovernor.state(proposalId)));
+
+        vm.roll(block.number + votingGovernor.votingPeriod() + 1);
+        assertEq(3, uint256(votingGovernor.state(proposalId)));
+
+        vm.expectRevert("Governor: proposal not successful");
+        votingGovernor.queue(proposalId);
+        vm.stopPrank();
     }
 
     function testProposalExecutionSuccess() public {
+        vm.startPrank(owner);
+        votingToken.delegate(owner);
+        vm.roll(block.number + 1);
 
-    }
+        uint256 proposalId = _propose();
+        assertEq(0, uint256(votingGovernor.state(proposalId)));
 
-    function testProposalExecutionNonExecutor() public {
+        vm.roll(block.number + votingGovernor.votingDelay() + 1);
+        assertEq(1, uint256(votingGovernor.state(proposalId)));
 
+        votingGovernor.castVote(proposalId, 1);
+
+        vm.roll(block.number + votingGovernor.votingPeriod() + 1);
+        assertEq(4, uint256(votingGovernor.state(proposalId)));
+
+        votingGovernor.queue(proposalId);
+        assertEq(5, uint256(votingGovernor.state(proposalId)));
+
+        vm.roll(block.number + MIN_DELAY + 500);
+        votingGovernor.execute(proposalId);
+        vm.stopPrank();
     }
 
     function testProposalExecutionEffects() public {
 
+    }
+
+    function testProposalExecutionTimelockNotReady() public {
+        vm.startPrank(owner);
+        votingToken.delegate(owner);
+        vm.roll(block.number + 1);
+
+        uint256 proposalId = _propose();
+        assertEq(0, uint256(votingGovernor.state(proposalId)));
+
+        vm.roll(block.number + votingGovernor.votingDelay() + 1);
+        assertEq(1, uint256(votingGovernor.state(proposalId)));
+
+        votingGovernor.castVote(proposalId, 1);
+
+        vm.roll(block.number + votingGovernor.votingPeriod() + 1);
+        assertEq(4, uint256(votingGovernor.state(proposalId)));
+
+        votingGovernor.queue(proposalId);
+        assertEq(5, uint256(votingGovernor.state(proposalId)));
+
+        vm.expectRevert("TimelockController: operation is not ready");
+        votingGovernor.execute(proposalId);
+        vm.stopPrank();
     }
 }
