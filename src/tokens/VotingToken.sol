@@ -2,9 +2,7 @@
 pragma solidity ^0.8.2;
 
 import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
-import {ERC20} from "openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
-import {ERC20Permit} from "openzeppelin-contracts/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
-import {ERC20Votes} from "openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Votes.sol";
+import {ERC20Votes, ERC20, ERC20Permit} from "openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Votes.sol";
 
 contract VotingToken is ERC20, ERC20Permit, ERC20Votes, Ownable {
     constructor(uint256 initialSupply)
