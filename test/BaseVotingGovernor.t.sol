@@ -10,6 +10,9 @@ import {VotingGovernor} from "../src/VotingGovernor.sol";
 import {TimelockController} from "openzeppelin-contracts/contracts/governance/TimelockController.sol";
 
 contract BaseVotingGovernorTest is Test {
+    bytes32 public constant PROPOSER_ROLE = keccak256("PROPOSER_ROLE");
+    bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
+
     uint256 internal constant MIN_DELAY = 10;
     address internal immutable owner = vm.addr(0x1);
     address internal immutable executor = vm.addr(0x2);
@@ -24,8 +27,8 @@ contract BaseVotingGovernorTest is Test {
     TimelockController internal timelockController;
 
     function setUp() public virtual {
-        proposers[0] = owner;
-        executors[0] = executor;
+       proposers[0] = owner;
+       executors[0] = executor;
 
         vm.startPrank(owner);
 
@@ -38,6 +41,9 @@ contract BaseVotingGovernorTest is Test {
             owner
         );
         votingGovernor = new VotingGovernor(votingToken, timelockController);
+
+        timelockController.grantRole(PROPOSER_ROLE, address(votingGovernor));
+        timelockController.grantRole(EXECUTOR_ROLE, address(votingGovernor));
 
         usdc.transfer(address(timelockController), 1000);
 
@@ -73,23 +79,5 @@ contract BaseVotingGovernorTest is Test {
         );
 
         return proposalId;
-    }
-
-    function _queue() internal {
-        address[] memory targets = new address[](1);
-        targets[0] = address(usdc);
-        uint256[] memory values = new uint256[](1);
-        // values[0] = 0
-        bytes[] memory calldatas = new bytes[](1);
-        calldatas[0] = abi.encodeWithSignature("transfer(address,uint256)", noone, 100);
-        // string memory description = "Description";
-        bytes32 description = bytes32(bytes("Description"));
-
-        votingGovernor.queue(
-            targets,
-            values,
-            calldatas,
-            description
-        );
     }
 }
