@@ -21,23 +21,40 @@ contract VotingGovernor is
     uint256 public constant BLOCKS_IN_1_WEEK = 46027;
     uint256 public constant PROPOSAL_TRESHOLD = 10;
 
-    constructor(IVotes _token, TimelockController _timelock)
+    uint256 public immutable govVotingDelay;
+    uint256 public immutable govVotingPeriod;
+    uint256 public immutable govProposalTreshold;
+    uint256 public immutable govQuorum;
+
+    constructor(
+        IVotes _token,
+        TimelockController _timelock,
+        uint256 _votingDelay,
+        uint256 _votingPeriod,
+        uint256 _proposalTreshold,
+        uint256 _quorum
+    )
         Governor("VotingGovernor")
         GovernorVotes(_token)
-        GovernorVotesQuorumFraction(4)
+        GovernorVotesQuorumFraction(_quorum)
         GovernorTimelockControl(_timelock)
-    {}
-
-    function votingDelay() public pure override returns (uint256) {
-        return BLOCKS_IN_1_DAY;
+    {
+        govVotingDelay = _votingDelay;
+        govVotingPeriod = _votingPeriod;
+        govProposalTreshold = _proposalTreshold;
+        govQuorum = _quorum;
     }
 
-    function votingPeriod() public pure override returns (uint256) {
-        return BLOCKS_IN_1_WEEK;
+    function votingDelay() public view override returns (uint256) {
+        return govVotingDelay;
     }
 
-    function proposalThreshold() public pure override returns (uint256) {
-        return PROPOSAL_TRESHOLD;
+    function votingPeriod() public view override returns (uint256) {
+        return govVotingPeriod;
+    }
+
+    function proposalThreshold() public view override returns (uint256) {
+        return govProposalTreshold;
     }
 
     // The functions below are overrides required by Solidity.

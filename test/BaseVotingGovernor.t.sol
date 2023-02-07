@@ -27,6 +27,11 @@ contract BaseVotingGovernorTest is Test {
         Abstain
     }
 
+    uint256 public constant BLOCKS_IN_1_DAY = 6575;
+    uint256 public constant BLOCKS_IN_1_WEEK = 46027;
+    uint256 public constant PROPOSAL_TRESHOLD = 10;
+    uint256 public constant QUORUM = 4;
+
     bytes32 public constant PROPOSER_ROLE = keccak256("PROPOSER_ROLE");
     bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
 
@@ -57,7 +62,14 @@ contract BaseVotingGovernorTest is Test {
             executors,
             owner
         );
-        votingGovernor = new VotingGovernor(votingToken, timelockController);
+        votingGovernor = new VotingGovernor(
+            votingToken,
+            timelockController,
+            BLOCKS_IN_1_DAY,
+            BLOCKS_IN_1_WEEK,
+            PROPOSAL_TRESHOLD,
+            QUORUM
+        );
 
         timelockController.grantRole(PROPOSER_ROLE, address(votingGovernor));
         timelockController.grantRole(EXECUTOR_ROLE, address(votingGovernor));
