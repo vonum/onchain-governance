@@ -3,7 +3,7 @@
 pragma solidity ^0.8.15;
 
 import {Test} from "forge-std/Test.sol";
-import {VotingToken} from "../src/VotingToken.sol";
+import {VotingToken} from "../src/tokens/VotingToken.sol";
 
 contract TokenTest is Test {
     VotingToken internal votingToken;

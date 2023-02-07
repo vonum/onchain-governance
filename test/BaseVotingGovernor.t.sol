@@ -3,8 +3,8 @@
 pragma solidity ^0.8.15;
 
 import {Test} from "forge-std/Test.sol";
-import {Token} from "../src/Token.sol";
-import {VotingToken} from "../src/VotingToken.sol";
+import {Token} from "../src/tokens/Token.sol";
+import {VotingToken} from "../src/tokens/VotingToken.sol";
 import {VotingGovernor} from "../src/VotingGovernor.sol";
 
 import {TimelockController} from "openzeppelin-contracts/contracts/governance/TimelockController.sol";
