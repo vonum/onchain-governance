@@ -80,15 +80,19 @@ contract BaseVotingGovernorTest is Test {
     }
 
     function testVotingDelay() public {
-        assertEq(6575, votingGovernor.votingDelay());
+        assertEq(BLOCKS_IN_1_DAY, votingGovernor.votingDelay());
     }
 
     function testVotingPeriod() public {
-        assertEq(46027, votingGovernor.votingPeriod());
+        assertEq(BLOCKS_IN_1_WEEK, votingGovernor.votingPeriod());
     }
 
     function testProposalTreshold() public {
-        assertEq(10, votingGovernor.proposalThreshold());
+        assertEq(PROPOSAL_TRESHOLD, votingGovernor.proposalThreshold());
+    }
+
+    function testQuorum() public {
+        assertEq(QUORUM, votingGovernor.quorumNumerator());
     }
 
     function _propose() internal returns (uint256) {

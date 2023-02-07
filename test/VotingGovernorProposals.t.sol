@@ -49,7 +49,7 @@ contract VotingGovernorProposalsTest is BaseVotingGovernorTest {
             uint256(votingGovernor.state(proposalId))
         );
 
-        vm.roll(block.number + votingGovernor.votingDelay() + 1);
+        vm.roll(block.number + BLOCKS_IN_1_DAY + 1);
         assertEq(
             uint256(ProposalState.Active),
             uint256(votingGovernor.state(proposalId))
@@ -130,7 +130,7 @@ contract VotingGovernorProposalsTest is BaseVotingGovernorTest {
             uint256(votingGovernor.state(proposalId))
         );
 
-        vm.roll(block.number + votingGovernor.votingDelay() + 1);
+        vm.roll(block.number + BLOCKS_IN_1_DAY + 1);
         assertEq(
             uint256(ProposalState.Active),
             uint256(votingGovernor.state(proposalId))
@@ -139,7 +139,7 @@ contract VotingGovernorProposalsTest is BaseVotingGovernorTest {
         votingGovernor.castVote(proposalId, uint8(Vote.For));
         vm.stopPrank();
 
-        vm.roll(block.number + votingGovernor.votingPeriod() + 1);
+        vm.roll(block.number + BLOCKS_IN_1_WEEK + 1);
         assertEq(
             uint256(ProposalState.Succeeded),
             uint256(votingGovernor.state(proposalId))
@@ -158,13 +158,13 @@ contract VotingGovernorProposalsTest is BaseVotingGovernorTest {
         );
         vm.stopPrank();
 
-        vm.roll(block.number + votingGovernor.votingDelay() + 1);
+        vm.roll(block.number + BLOCKS_IN_1_DAY + 1);
         assertEq(
             uint256(ProposalState.Active),
             uint256(votingGovernor.state(proposalId))
         );
 
-        vm.roll(block.number + votingGovernor.votingPeriod() + 1);
+        vm.roll(block.number + BLOCKS_IN_1_WEEK + 1);
         assertEq(
             uint256(ProposalState.Defeated),
             uint256(votingGovernor.state(proposalId))
