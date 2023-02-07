@@ -21,6 +21,12 @@ contract BaseVotingGovernorTest is Test {
         Executed
     }
 
+    enum Vote {
+        Against,
+        For,
+        Abstain
+    }
+
     bytes32 public constant PROPOSER_ROLE = keccak256("PROPOSER_ROLE");
     bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
 

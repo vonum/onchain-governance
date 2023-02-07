@@ -55,7 +55,7 @@ contract VotingGovernorProposalsTest is BaseVotingGovernorTest {
             uint256(votingGovernor.state(proposalId))
         );
 
-        votingGovernor.castVote(proposalId, 1);
+        votingGovernor.castVote(proposalId, uint8(Vote.For));
         vm.stopPrank();
 
         vm.roll(block.number + 10);
@@ -79,7 +79,7 @@ contract VotingGovernorProposalsTest is BaseVotingGovernorTest {
         );
 
         vm.expectRevert("Governor: vote not currently active");
-        votingGovernor.castVote(proposalId, 1);
+        votingGovernor.castVote(proposalId, uint8(Vote.For));
         vm.stopPrank();
     }
 
@@ -136,7 +136,7 @@ contract VotingGovernorProposalsTest is BaseVotingGovernorTest {
             uint256(votingGovernor.state(proposalId))
         );
 
-        votingGovernor.castVote(proposalId, 1);
+        votingGovernor.castVote(proposalId, uint8(Vote.For));
         vm.stopPrank();
 
         vm.roll(block.number + votingGovernor.votingPeriod() + 1);

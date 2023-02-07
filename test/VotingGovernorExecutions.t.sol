@@ -24,7 +24,7 @@ contract VotingGovernorExecutionsTest is BaseVotingGovernorTest {
             uint256(votingGovernor.state(proposalId))
         );
 
-        votingGovernor.castVote(proposalId, 1);
+        votingGovernor.castVote(proposalId, uint8(Vote.For));
 
         vm.roll(block.number + votingGovernor.votingPeriod() + 1);
         assertEq(
@@ -85,7 +85,7 @@ contract VotingGovernorExecutionsTest is BaseVotingGovernorTest {
             uint256(votingGovernor.state(proposalId))
         );
 
-        votingGovernor.castVote(proposalId, 1);
+        votingGovernor.castVote(proposalId, uint8(Vote.For));
 
         vm.roll(block.number + votingGovernor.votingPeriod() + 1);
         assertEq(
@@ -127,7 +127,7 @@ contract VotingGovernorExecutionsTest is BaseVotingGovernorTest {
             uint256(votingGovernor.state(proposalId))
         );
 
-        votingGovernor.castVote(proposalId, 1);
+        votingGovernor.castVote(proposalId, uint8(Vote.For));
 
         vm.roll(block.number + votingGovernor.votingPeriod() + 1);
         assertEq(
@@ -172,7 +172,7 @@ contract VotingGovernorExecutionsTest is BaseVotingGovernorTest {
             uint256(votingGovernor.state(proposalId))
         );
 
-        votingGovernor.castVote(proposalId, 1);
+        votingGovernor.castVote(proposalId, uint8(Vote.For));
 
         vm.roll(block.number + votingGovernor.votingPeriod() + 1);
         assertEq(
