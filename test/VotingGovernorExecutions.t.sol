@@ -13,18 +13,30 @@ contract VotingGovernorExecutionsTest is BaseVotingGovernorTest {
         vm.roll(block.number + 1);
 
         uint256 proposalId = _propose();
-        assertEq(0, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Pending),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         vm.roll(block.number + votingGovernor.votingDelay() + 1);
-        assertEq(1, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Active),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         votingGovernor.castVote(proposalId, 1);
 
         vm.roll(block.number + votingGovernor.votingPeriod() + 1);
-        assertEq(4, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Succeeded),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         votingGovernor.queue(proposalId);
-        assertEq(5, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Queued),
+            uint256(votingGovernor.state(proposalId))
+        );
         vm.stopPrank();
     }
 
@@ -34,13 +46,22 @@ contract VotingGovernorExecutionsTest is BaseVotingGovernorTest {
         vm.roll(block.number + 1);
 
         uint256 proposalId = _propose();
-        assertEq(0, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Pending),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         vm.roll(block.number + votingGovernor.votingDelay() + 1);
-        assertEq(1, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Active),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         vm.roll(block.number + votingGovernor.votingPeriod() + 1);
-        assertEq(3, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Defeated),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         vm.expectRevert("Governor: proposal not successful");
         votingGovernor.queue(proposalId);
@@ -53,23 +74,40 @@ contract VotingGovernorExecutionsTest is BaseVotingGovernorTest {
         vm.roll(block.number + 1);
 
         uint256 proposalId = _propose();
-        assertEq(0, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Pending),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         vm.roll(block.number + votingGovernor.votingDelay() + 1);
-        assertEq(1, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Active),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         votingGovernor.castVote(proposalId, 1);
 
         vm.roll(block.number + votingGovernor.votingPeriod() + 1);
-        assertEq(4, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Succeeded),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         votingGovernor.queue(proposalId);
-        assertEq(5, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Queued),
+            uint256(votingGovernor.state(proposalId))
+        );
         vm.stopPrank();
 
         vm.prank(executor);
         vm.warp(block.timestamp + 10000000000);
+
         votingGovernor.execute(proposalId);
+        assertEq(
+            uint256(ProposalState.Executed),
+            uint256(votingGovernor.state(proposalId))
+        );
     }
 
     function testProposalExecutionEffects() public {
@@ -78,23 +116,40 @@ contract VotingGovernorExecutionsTest is BaseVotingGovernorTest {
         vm.roll(block.number + 1);
 
         uint256 proposalId = _propose();
-        assertEq(0, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Pending),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         vm.roll(block.number + votingGovernor.votingDelay() + 1);
-        assertEq(1, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Active),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         votingGovernor.castVote(proposalId, 1);
 
         vm.roll(block.number + votingGovernor.votingPeriod() + 1);
-        assertEq(4, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Succeeded),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         votingGovernor.queue(proposalId);
-        assertEq(5, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Queued),
+            uint256(votingGovernor.state(proposalId))
+        );
         vm.stopPrank();
 
         vm.prank(executor);
         vm.warp(block.timestamp + 10000000000);
+
         votingGovernor.execute(proposalId);
+        assertEq(
+            uint256(ProposalState.Executed),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         assertEq(100, usdc.balanceOf(noone));
         assertEq(900, usdc.balanceOf(address(timelockController)));
@@ -106,18 +161,30 @@ contract VotingGovernorExecutionsTest is BaseVotingGovernorTest {
         vm.roll(block.number + 1);
 
         uint256 proposalId = _propose();
-        assertEq(0, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Pending),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         vm.roll(block.number + votingGovernor.votingDelay() + 1);
-        assertEq(1, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Active),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         votingGovernor.castVote(proposalId, 1);
 
         vm.roll(block.number + votingGovernor.votingPeriod() + 1);
-        assertEq(4, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Succeeded),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         votingGovernor.queue(proposalId);
-        assertEq(5, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Queued),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         vm.expectRevert("TimelockController: operation is not ready");
         votingGovernor.execute(proposalId);

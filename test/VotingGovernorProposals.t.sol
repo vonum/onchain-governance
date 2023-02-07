@@ -20,7 +20,10 @@ contract VotingGovernorProposalsTest is BaseVotingGovernorTest {
         uint256 proposalId = _propose();
         vm.stopPrank();
 
-        assertEq(0, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Pending),
+            uint256(votingGovernor.state(proposalId))
+        );
     }
 
     function testRevertProposeNotEnoughTokens() public {
@@ -41,9 +44,16 @@ contract VotingGovernorProposalsTest is BaseVotingGovernorTest {
 
         vm.startPrank(noone);
         uint256 proposalId = _propose();
+        assertEq(
+            uint256(ProposalState.Pending),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         vm.roll(block.number + votingGovernor.votingDelay() + 1);
-        assertEq(1, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Active),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         votingGovernor.castVote(proposalId, 1);
         vm.stopPrank();
@@ -63,9 +73,13 @@ contract VotingGovernorProposalsTest is BaseVotingGovernorTest {
         assertEq(1000, delegatedVotes);
 
         uint256 proposalId = _propose();
+        assertEq(
+            uint256(ProposalState.Pending),
+            uint256(votingGovernor.state(proposalId))
+        );
+
         vm.expectRevert("Governor: vote not currently active");
         votingGovernor.castVote(proposalId, 1);
-
         vm.stopPrank();
     }
 
@@ -75,11 +89,17 @@ contract VotingGovernorProposalsTest is BaseVotingGovernorTest {
         vm.roll(block.number + 1);
 
         uint256 proposalId = _propose();
-        assertEq(0, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Pending),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         votingGovernor.cancel(proposalId);
         vm.stopPrank();
-        assertEq(2, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Canceled),
+            uint256(votingGovernor.state(proposalId))
+        );
     }
 
     function testCancelProposalNonProposer() public {
@@ -88,9 +108,11 @@ contract VotingGovernorProposalsTest is BaseVotingGovernorTest {
         vm.roll(block.number + 1);
 
         uint256 proposalId = _propose();
+        assertEq(
+            uint256(ProposalState.Pending),
+            uint256(votingGovernor.state(proposalId))
+        );
         vm.stopPrank();
-
-        assertEq(0, uint256(votingGovernor.state(proposalId)));
 
         vm.prank(noone);
         vm.expectRevert("GovernorBravo: proposer above threshold");
@@ -103,16 +125,25 @@ contract VotingGovernorProposalsTest is BaseVotingGovernorTest {
         vm.roll(block.number + 1);
 
         uint256 proposalId = _propose();
-        assertEq(0, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Pending),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         vm.roll(block.number + votingGovernor.votingDelay() + 1);
-        assertEq(1, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Active),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         votingGovernor.castVote(proposalId, 1);
         vm.stopPrank();
 
         vm.roll(block.number + votingGovernor.votingPeriod() + 1);
-        assertEq(4, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Succeeded),
+            uint256(votingGovernor.state(proposalId))
+        );
     }
 
     function testProposalDefeated() public {
@@ -121,13 +152,22 @@ contract VotingGovernorProposalsTest is BaseVotingGovernorTest {
         vm.roll(block.number + 1);
 
         uint256 proposalId = _propose();
+        assertEq(
+            uint256(ProposalState.Pending),
+            uint256(votingGovernor.state(proposalId))
+        );
         vm.stopPrank();
-        assertEq(0, uint256(votingGovernor.state(proposalId)));
 
         vm.roll(block.number + votingGovernor.votingDelay() + 1);
-        assertEq(1, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Active),
+            uint256(votingGovernor.state(proposalId))
+        );
 
         vm.roll(block.number + votingGovernor.votingPeriod() + 1);
-        assertEq(3, uint256(votingGovernor.state(proposalId)));
+        assertEq(
+            uint256(ProposalState.Defeated),
+            uint256(votingGovernor.state(proposalId))
+        );
     }
 }

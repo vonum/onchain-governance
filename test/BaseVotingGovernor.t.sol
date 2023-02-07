@@ -10,6 +10,17 @@ import {VotingGovernor} from "../src/VotingGovernor.sol";
 import {TimelockController} from "openzeppelin-contracts/contracts/governance/TimelockController.sol";
 
 contract BaseVotingGovernorTest is Test {
+    enum ProposalState {
+        Pending,
+        Active,
+        Canceled,
+        Defeated,
+        Succeeded,
+        Queued,
+        Expired,
+        Executed
+    }
+
     bytes32 public constant PROPOSER_ROLE = keccak256("PROPOSER_ROLE");
     bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
 
